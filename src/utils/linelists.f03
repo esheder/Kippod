@@ -4,10 +4,12 @@
 !List of changes:
 !DATE              AUTHOR      CHANGE LOG
 !July 3rd, 2017    Eshed       First working version
+!
 
 MODULE linelists
   USE Exceptions
-  USE lists
+  USE Lists
+  USE Parameters
   IMPLICIT NONE
   PRIVATE
   PUBLIC :: LineList, constructor_LineList

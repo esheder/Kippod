@@ -11,7 +11,6 @@ MODULE Lists
   USE Exceptions
   IMPLICIT NONE
   PRIVATE
-  INTEGER, PUBLIC, PARAMETER :: MX_BFR = 500
   
   TYPE, PUBLIC :: LinkedList
      !A general linked list that contains nothing. Will always be downcast for actual use.

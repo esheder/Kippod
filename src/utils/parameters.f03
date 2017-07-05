@@ -13,4 +13,5 @@ MODULE Parameters
   INTEGER, PARAMETER :: SRK = SELECTED_REAL_KIND(13,20) !Selected Real Kind.
   INTEGER, PARAMETER :: SIK = SELECTED_INT_KIND(10)     !Selected Integer Kind.
   INTEGER, PARAMETER :: MX_PATHLENGTH = 500             !Maximum of characters in a file path
+  INTEGER, PARAMETER :: MX_BFR = 500                    !Maximum of characters in a file record
 END MODULE Parameters

@@ -10,7 +10,6 @@
 MODULE Parsers
   USE Exceptions
   USE MathUtils
-  USE Lists
   USE Parameters
   IMPLICIT NONE
   PRIVATE
