@@ -10,6 +10,7 @@ MODULE CoreParsers
   USE Parsers
   USE Exceptions
   USE Lists
+  USE Seclists
   IMPLICIT NONE
   PRIVATE
 
@@ -27,12 +28,19 @@ MODULE CoreParsers
      TYPE(LoadingParser) :: load_prsr
      TYPE(OperationParser) :: oprt_prsr
      TYPE(OptionsParser) :: opt_prsr
-     TYPE(SectionList) :: secs
+     TYPE(SectionList), POINTER :: secs => NULL()
    CONTAINS
      PROCEDURE, PASS :: parse_file => core_parse
+     PROCEDURE, PASS :: init
   END TYPE CoreFileParser
 
 CONTAINS
+
+  SUBROUTINE init(self)
+    CLASS(CoreFileParser), INTENT(INOUT) :: self
+    !Empty right now
+
+  END SUBROUTINE init
 
   SUBROUTINE core_parse(self, err)
     !Parse the core file into a bunch of sections, and then parse each section using its specific
@@ -79,6 +87,8 @@ CONTAINS
              CALL err%print()
              STOP(1)
           END IF
+       CASE (EMPTY)
+          restart = .FALSE.
        CASE DEFAULT
           CALL lines%append(LineList(line))
           restart = .FALSE.

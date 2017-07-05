@@ -12,24 +12,24 @@ MODULE Seclists
   USE Parameters
   IMPLICIT NONE
   PRIVATE
-  PUBLIC :: Section
+  PUBLIC :: SectionList
 
-  TYPE, PUBLIC, EXTENDS(LinkedList) :: Section
+  TYPE, PUBLIC, EXTENDS(LinkedList) :: SectionList
      ! A Linked list node that contains a line-list.
      PRIVATE
-     CLASS(LineList), POINTER :: fline
+     CLASS(LineList), POINTER, PUBLIC :: fline
      CHARACTER(MX_BFR), PUBLIC :: name
    CONTAINS
-  END TYPE Section
-
-  INTERFACE Section
+  END TYPE SectionList
+  
+  INTERFACE SectionList
      MODULE PROCEDURE new_Section
-  END INTERFACE Section
+  END INTERFACE SectionList
 
 CONTAINS
 
   FUNCTION new_Section(lines, name) RESULT(sec)
-    CLASS(Section), POINTER :: sec
+    CLASS(SectionList), POINTER :: sec
     CLASS(LineList), TARGET, INTENT(IN) :: lines
     CHARACTER(*), INTENT(IN), OPTIONAL :: name
 

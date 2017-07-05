@@ -12,7 +12,7 @@ MODULE linelists
   USE Parameters
   IMPLICIT NONE
   PRIVATE
-  PUBLIC :: LineList, constructor_LineList
+  PUBLIC :: LineList, constructor_LineList, ListDowncast
   
   TYPE, PUBLIC, EXTENDS(LinkedList) :: LineList
      !A linked list node that contains a string.
@@ -25,9 +25,7 @@ MODULE linelists
   END INTERFACE LineList
   
   INTERFACE ListDowncast
-     MODULE PROCEDURE downto_linelist_err
-
-     MODULE PROCEDURE downto_linelist
+     MODULE PROCEDURE downto_linelist_fun
   END INTERFACE ListDowncast
 
 CONTAINS
@@ -70,5 +68,19 @@ CONTAINS
     END SELECT
     
   END SUBROUTINE downto_linelist
+
+  FUNCTION downto_linelist_fun(list) RESULT(nlist)
+    CLASS(LinkedList), TARGET, INTENT(IN) :: list
+    TYPE(LineList), POINTER :: nlist
+    
+    SELECT TYPE(e=>list)
+    TYPE IS (LineList)
+       nlist => e
+    CLASS DEFAULT
+       nlist => null()
+    END SELECT
+    
+  END FUNCTION downto_linelist_fun
+    
 
 END MODULE linelists

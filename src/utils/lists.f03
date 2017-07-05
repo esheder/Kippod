@@ -11,6 +11,7 @@ MODULE Lists
   USE Exceptions
   IMPLICIT NONE
   PRIVATE
+  PUBLIC :: LEN
   
   TYPE, PUBLIC :: LinkedList
      !A general linked list that contains nothing. Will always be downcast for actual use.
@@ -27,6 +28,10 @@ MODULE Lists
   INTERFACE LinkedList
      MODULE PROCEDURE constructor_LinkedList
   END INTERFACE LinkedList
+
+  INTERFACE LEN
+     MODULE PROCEDURE length
+  END INTERFACE LEN
   
 CONTAINS
 
@@ -76,5 +81,24 @@ CONTAINS
     ALLOCATE(node)
     CALL node%init()
   END FUNCTION constructor_LinkedList
+
+  FUNCTION length(list) RESULT(cnt)
+    !Checks for length. Assumes non-cyclic chains.
+    INTEGER :: cnt
+    CLASS(LinkedList), POINTER, INTENT(IN) :: list
+    CLASS(LinkedList), POINTER :: ptr
+    CLASS(LinkedList), POINTER :: eptr
+
+    cnt = 0
+    IF (.NOT. ASSOCIATED(list)) RETURN
+    ptr => list%first
+    eptr => list%last
+    cnt = 1
+    DO WHILE (.NOT. ASSOCIATED(ptr, eptr))
+       cnt = cnt + 1
+       ptr => ptr%next
+    END DO
+
+  END FUNCTION length
   
 END MODULE Lists

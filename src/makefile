@@ -4,7 +4,8 @@ STRCTDIR = struct
 SOLVEDIR = solvers
 UTILDIR = utils
 BINDIR = ../bin
-srcdirs = . $(IODIR) $(SOLVEDIR) $(STRCTDIR) $(UTILDIR)
+BUILDIR = build
+srcdirs = . $(IODIR) $(SOLVEDIR) $(STRCTDIR) $(UTILDIR) $(BUILDIR)
 
 F03 = gfortran
 FFLAGS = -O2
@@ -12,7 +13,7 @@ FFLAGS = -O2
 export F03
 export FFLAGS
 
-all: cutils cIO csolvers structures
+all: clean cutils structures cIO csolvers
 
 cutils:
 	$(MAKE) -C utils
