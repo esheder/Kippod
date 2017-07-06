@@ -1,5 +1,10 @@
+SRCOBJ = $(wildcard *.f03)
+MODOBJ = $(SRCOBJ:.f03=.mod)
+VPATH = ../build
+MODP = -I../build -J../build
 
-all : clean
+all : 
 
 clean :
-	rm -f *.o *.mod *~
+	@rm -f *.o *.mod *~
+test : all ;

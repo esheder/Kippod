@@ -116,7 +116,7 @@ CONTAINS
   SUBROUTINE print_exception(self)
     CLASS(Exception), INTENT(IN) :: self
 
-    PRINT*, self%msg
+    WRITE(*, *) TRIM(self%msg)
   END SUBROUTINE print_exception
 
   SUBROUTINE print_IOError(self)
@@ -125,9 +125,9 @@ CONTAINS
 
     WRITE(cd, "(1X,I3)") self%IOSTAT
 
-    PRINT*, self%msg
-    PRINT*, 'Failed on file: ' // self%fpath
-    PRINT*, 'Status code was: ' // cd 
+    WRITE(*,*) TRIM(self%msg)
+    WRITE(*,*) 'Failed on file: ' // TRIM(self%fpath)
+    WRITE(*,*) 'Status code was: ' // cd 
   END SUBROUTINE print_IOError
      
 END MODULE Exceptions

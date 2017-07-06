@@ -12,12 +12,14 @@ MODULE linelists
   USE Parameters
   IMPLICIT NONE
   PRIVATE
-  PUBLIC :: LineList, constructor_LineList, ListDowncast
+  PUBLIC :: LineList, constructor_LineList, ListDowncast, split
   
   TYPE, PUBLIC, EXTENDS(LinkedList) :: LineList
      !A linked list node that contains a string.
      PRIVATE
      CHARACTER(MX_BFR), PUBLIC :: line = ''
+   CONTAINS
+     PROCEDURE, PASS :: print => print_lines
   END TYPE LineList
   
   INTERFACE LineList
@@ -81,6 +83,43 @@ CONTAINS
     END SELECT
     
   END FUNCTION downto_linelist_fun
-    
+
+  
+  FUNCTION split(line) RESULT(wordlist)
+    !Assumes the line is left adjusted and trimmed.
+    CLASS(LineList), POINTER :: wordlist
+    CLASS(LineList), POINTER :: tmp
+    CHARACTER(*), INTENT(IN) :: line
+    INTEGER :: s,e
+
+    s = 1
+    DO WHILE (s .LE. LEN(line))
+       e = INDEX(line(s:), ' ') - 1
+       IF (e .LE. 0) e = LEN(line(s:))
+       IF (s .EQ. 1) THEN
+          ALLOCATE(wordlist)
+          CALL wordlist%init()
+          wordlist%line = line(s:s+e)
+       ELSE
+          tmp => LineList(line(s:s+e))
+          CALL wordlist%append(tmp)
+       END IF
+       s = s + e + 1
+    END DO
+
+    wordlist => ListDowncast(wordlist%first)
+
+  END FUNCTION split
+
+  SUBROUTINE print_lines(self)
+    CLASS(LineList), INTENT(IN) :: self
+    CLASS(LineList), POINTER :: p
+
+    p => ListDowncast(self%first)
+    DO WHILE (ASSOCIATED(p))
+       WRITE(*, *) TRIM(p%line)
+       p => ListDowncast(p%next)
+    END DO
+  END SUBROUTINE print_lines
 
 END MODULE linelists

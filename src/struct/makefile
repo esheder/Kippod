@@ -2,10 +2,14 @@ SRCOBJ = $(wildcard *.f03)
 MODOBJ = $(SRCOBJ:.f03=.mod)
 VPATH = ../build
 MODP = -I../build -J../build
+BD = ../build
 
-all: clean materials.mod
+all: materials.o
 
-materials.mod : materials.f03 exceptions.mod
-	$(F03) $(FFLAGS) -c $(MODP) materials.f03
+materials.o : 
+	$(F03) $(FFLAGS) -c $(MODP) materials.f03 -o $(BD)/$@
+
 clean:
-	rm -f *.mod *.o
+	@rm -f *.mod *.o
+
+test: all ;

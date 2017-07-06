@@ -17,8 +17,8 @@ MODULE Lists
      !A general linked list that contains nothing. Will always be downcast for actual use.
      PRIVATE
      CLASS(LinkedList), PUBLIC, POINTER :: next => NULL()
-     CLASS(LinkedList), POINTER :: first => NULL()
-     CLASS(LinkedList), POINTER :: last => NULL()
+     CLASS(LinkedList), PUBLIC, POINTER :: first => NULL()
+     CLASS(LinkedList), PUBLIC, POINTER :: last => NULL()
    CONTAINS
      PROCEDURE, PASS :: destructor
      PROCEDURE, PASS :: init
@@ -92,13 +92,37 @@ CONTAINS
     cnt = 0
     IF (.NOT. ASSOCIATED(list)) RETURN
     ptr => list%first
-    eptr => list%last
-    cnt = 1
-    DO WHILE (.NOT. ASSOCIATED(ptr, eptr))
+    DO WHILE (ASSOCIATED(ptr))
        cnt = cnt + 1
        ptr => ptr%next
     END DO
 
   END FUNCTION length
+
+  SUBROUTINE listpop(self, res)
+    !This isn't a procedure for lists because for some reason we can't assume self would be a
+    !pointer to a list, so we can't just do regular pointer actions here.
+    CLASS(LinkedList), POINTER, INTENT(INOUT) :: self
+    CLASS(LinkedList), POINTER, OPTIONAL, INTENT(OUT) :: res
+    CLASS(LinkedList), POINTER :: newf
+
+    newf => self%next
+    self => newf
+    IF (PRESENT(res)) THEN
+       res => self%first
+       res%last => NULL()
+       res%next => NULL()
+    ELSE
+       DEALLOCATE(self%first)
+    END IF
+
+    DO WHILE (ASSOCIATED(self))
+       self%first => newf
+       self => self%next
+    END DO
+    
+    self => newf
+
+  END SUBROUTINE listpop
   
 END MODULE Lists

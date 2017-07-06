@@ -1,0 +1,5 @@
+{materials
+
+FUEL file=/home/eshedm/Yourmom/Crossections.ext set=1 burn=1
+
+}

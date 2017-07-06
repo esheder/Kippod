@@ -20,6 +20,7 @@ MODULE Seclists
      CLASS(LineList), POINTER, PUBLIC :: fline
      CHARACTER(MX_BFR), PUBLIC :: name
    CONTAINS
+     PROCEDURE, PASS :: destructor => destroy
   END TYPE SectionList
   
   INTERFACE SectionList
@@ -39,5 +40,18 @@ CONTAINS
     IF (PRESENT(name)) sec%name = name
     
   END FUNCTION new_Section
+
+  
+  RECURSIVE SUBROUTINE destroy(self)
+    CLASS(SectionList) , INTENT(INOUT):: self
+    IF (ASSOCIATED(self%next)) THEN
+       IF (ASSOCIATED(self%fline)) THEN
+          CALL self%fline%destructor()
+          DEALLOCATE(self%fline)
+       END IF
+       CALL self%next%destructor()
+       DEALLOCATE(self%next)
+    END IF
+  END SUBROUTINE destroy
 
 END MODULE Seclists

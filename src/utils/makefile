@@ -4,20 +4,28 @@ BINDIR = ../bin/
 SRCOBJ = $(wildcard *.f03)
 MODOBJ = $(SRCOBJ:.f03=.mod)
 MODP = -I../build -J../build
+VPATH = ../build
+BD = ../build
 
-all: clean $(MODOBJ)
+all: $(MODOBJ)
 
-linelists.mod : linelists.f03 lists.mod exceptions.mod parameters.mod
-	$(F03) $(FFLAGS) -c $(MODP) linelists.f03
+LLTest.o : ;
+%.mod : %.o ;
 
-lists.mod : lists.f03 exceptions.mod
-	$(F03) $(FFLAGS) -c $(MODP) lists.f03
+linelists.o : lists.mod exceptions.mod parameters.mod
+	$(F03) $(FFLAGS) -c $(MODP) linelists.f03 -o $(BD)/$@
 
-seclists.mod : seclists.f03 lists.mod linelists.mod parameters.mod
-	$(F03) $(FFLAGS) -c $(MODP) seclists.f03
+lists.o : exceptions.mod
+	$(F03) $(FFLAGS) -c $(MODP) lists.f03 -o $(BD)/$@
 
-%.mod : %.f03
-	$(F03) $(FFLAGS) -c $(MODP) $^
+seclists.o : lists.mod linelists.mod parameters.mod
+	$(F03) $(FFLAGS) -c $(MODP) seclists.f03 -o $(BD)/$@
+
+
+%.o : %.f03
+	$(F03) $(FFLAGS) -c $(MODP) $^ -o $(BD)/$@
 
 clean :
 	rm -f *.mod *.o *~
+
+test : all ;
