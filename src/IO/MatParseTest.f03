@@ -12,7 +12,7 @@ PROGRAM MatParseTest
   TYPE(LineList), POINTER :: fln
   TYPE(LineList), POINTER :: ln
   TYPE(MaterialParser) :: mp
-  TYPE(Error) :: err
+  TYPE(ValueError) :: err
 
   ALLOCATE(sec)
   CALL sec%init()
@@ -23,8 +23,7 @@ PROGRAM MatParseTest
   sec%fline => fln
   sec%name = 'Materials'
 
-  mp%raw_sec => sec
-  CALL mp%parse(err)
+  CALL mp%parse(sec, err)
   IF (err%catch()) CONTINUE
 
   CALL mp%destructor()
@@ -37,8 +36,6 @@ PROGRAM MatParseTest
   CALL sec%init()
   
   sec%fline => fln
-
-  mp%raw_sec => sec
-  CALL mp%parse(err)
+  CALL mp%parse(sec, err)
 
 END PROGRAM MatParseTest

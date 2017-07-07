@@ -11,6 +11,7 @@ MODULE Parsers
   USE Exceptions
   USE MathUtils
   USE Parameters
+  USE LineLists
   IMPLICIT NONE
   PRIVATE
 
@@ -22,6 +23,15 @@ MODULE Parsers
      PRIVATE
      
   END TYPE Parser
+
+  TYPE, PUBLIC, ABSTRACT, EXTENDS(Parser) :: DeflineParser
+     !A worker that breaks down definition lines to get information.
+     PRIVATE
+   CONTAINS
+     PROCEDURE, PASS, NON_OVERRIDABLE :: breakline
+     PROCEDURE, PASS, NON_OVERRIDABLE :: breakdef
+
+  END TYPE DeflineParser
 
   TYPE, PUBLIC, ABSTRACT, EXTENDS(Parser) :: FileParser
      !A Worker that works with a file
@@ -47,6 +57,9 @@ MODULE Parsers
 
 CONTAINS
 
+
+  !FileParser Subroutines
+  
   SUBROUTINE associate_file(self, path)
     CLASS(FileParser), INTENT(INOUT) :: self
     CHARACTER(*), INTENT(IN) :: path
@@ -102,5 +115,37 @@ CONTAINS
     END IF
 
   END SUBROUTINE close_file
+
+
+
+  !DefParser Subroutines
+
+  FUNCTION breakline(self, line) RESULT(sent)
+    CLASS(DeflineParser), INTENT(IN) :: self
+    CHARACTER(*), INTENT(IN) :: line
+    TYPE(LineList), POINTER :: sent
+
+    sent => split(TRIM(ADJUSTL(line)))
+
+  END FUNCTION breakline
+
+  SUBROUTINE breakdef(self, def, err, typ, msg)
+    CLASS(DeflineParser), INTENT(IN) :: self
+    CHARACTER(*), INTENT(IN) :: def
+    CHARACTER(MX_BFR), INTENT(OUT) :: typ, msg
+    TYPE(ValueError), INTENT(OUT) :: err
+    INTEGER :: k
+    k = INDEX(def, '=')
+    IF (k .EQ. 0) THEN
+       WRITE(msg, '(1X, A, A)') 'Word was not made up of A=B. Word was: ', TRIM(def)
+       CALL err%raise(msg)
+       err%value = TRIM(def)
+       RETURN
+    ELSE
+       typ = def(1:k-1)
+       msg = def(k+1:)
+    END IF
+    
+  END SUBROUTINE breakdef
 
 END MODULE Parsers

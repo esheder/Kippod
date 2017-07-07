@@ -8,12 +8,15 @@
 
 MODULE Materials
   USE Exceptions
+  USE Parameters
   
   IMPLICIT NONE
   PRIVATE
 
   TYPE, PUBLIC :: Material
      !TODO: Finish this definition
+
+     CHARACTER(MX_BFR) :: name
 
    CONTAINS
      PROCEDURE, PASS :: init

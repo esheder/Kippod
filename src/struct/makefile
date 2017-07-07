@@ -4,10 +4,13 @@ VPATH = ../build
 MODP = -I../build -J../build
 BD = ../build
 
-all: materials.o
+all: materials.o reflectors.o
 
 materials.o : 
 	$(F03) $(FFLAGS) -c $(MODP) materials.f03 -o $(BD)/$@
+
+reflectors.o : materials.o
+	$(F03) $(FFLAGS) -c $(MODP) reflectors.f03 -o $(BD)/$@
 
 clean:
 	@rm -f *.mod *.o

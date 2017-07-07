@@ -23,7 +23,7 @@ MODULE MaterialParsers
   CHARACTER(*), PARAMETER :: SETNM = 'set'
   CHARACTER(*), PARAMETER :: BURNFLG = 'burn'
 
-  TYPE, PUBLIC, EXTENDS(Parser) :: MaterialParser
+  TYPE, PUBLIC, EXTENDS(DeflineParser) :: MaterialParser
      ! A parser that takes the material section of a cip-like file and stores information for
      ! creation by a material constructor.
 
@@ -52,23 +52,26 @@ CONTAINS
     END IF
   END SUBROUTINE destructor
 
-  SUBROUTINE parse_lines(self, err)
+  SUBROUTINE parse_lines(self, sec, err)
     !Parse the material lines to create materials.
     !
     CLASS(MaterialParser), INTENT(INOUT) :: self
+    CLASS(SectionList), TARGET, INTENT(IN) :: sec
+    CLASS(ValueError), INTENT(OUT) :: err
     CLASS(LineList), POINTER :: line
     CLASS(LineList), POINTER :: words
-    TYPE(Error), INTENT(OUT) :: err
-    INTEGER :: i, j, k, num_lines, set, burn
+    INTEGER :: i, j, num_lines, set, burn
     CHARACTER(MX_BFR) :: msg, name, path, typ, frmt
 
+    IF (ASSOCIATED(self%raw_sec)) DEALLOCATE(self%raw_sec)
+    self%raw_sec => sec
     num_lines = LEN(self%raw_sec)
-    ALLOCATE(self%materials(num_lines))
+    ALLOCATE(self%materials(num_lines-1))
     line => self%raw_sec%fline
 
     lns:DO i=1, num_lines
        line => ListDowncast(line%next)
-       words => split(TRIM(ADJUSTL(line%line)))
+       words => self%breakline(line%line)
        IF (LEN(words) .NE. MATLINE_LEN) THEN
           frmt = '(1X, A, I3, 1X, A, I3, 1X, A, A)'
           WRITE(msg, frmt) 'Wrong word count in material line. CNT was ', LEN(words), &
@@ -84,17 +87,12 @@ CONTAINS
        wrds:  DO j=1, MATLINE_LEN - 1
           msg = words%line
           words => ListDowncast(words%next)
-          k = INDEX(msg, '=')
-          IF (k .EQ. 0) THEN
-             frmt = '(1X, A, A, A, I3, A, A)'
-             WRITE(msg, frmt) 'Word was not made up of A=B. Word was: ', TRIM(msg), &
-                           & ' in material line no. ', i, '. The full line was:', TRIM(words%line)
-             CALL err%raise(msg)
+          CALL self%breakdef(msg, err, typ, msg)
+          IF (err%catch()) THEN
              CALL err%print()
+             frmt = '(1X, A, I3, A, A)'
+             WRITE(*, frmt) 'This happened in material line ', i, '. Line was: ', TRIM(line%line)
              RETURN
-          ELSE
-             typ = msg(1:k-1)
-             msg = msg(k+1:)
           END IF
 
           WRITE(frmt, '(A, I10, A)') "(I", MX_BFR, ")"
@@ -116,23 +114,8 @@ CONTAINS
        END DO wrds
        
        !CALL self%materials(i)%init(name, path, set, burn, err)
-       IF (err%catch()) CALL stop_badline(i, line%line, err)
 
     END DO lns
-
-
-  CONTAINS
-    SUBROUTINE stop_badline(i, line, err)
-      INTEGER, INTENT(IN) :: i
-      CHARACTER(*), INTENT(IN) :: line
-      CLASS(Error), INTENT(IN) :: err
-      
-      WRITE(*, '(1X, A, I3, A, A)') 'Failed on line no. ', i, &
-           & ' of the materials section. Line was:', TRIM(line)
-      CALL err%print()
-      STOP(2)
-      
-    END SUBROUTINE stop_badline
        
   END SUBROUTINE parse_lines
      

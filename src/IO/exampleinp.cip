@@ -3,3 +3,9 @@
 FUEL file=/home/eshedm/Yourmom/Crossections.ext set=1 burn=1
 
 }
+
+{reflectors
+
+REFUP direction=up material=REF width=10.0 meshpoints=5 placement=1
+
+}

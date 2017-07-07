@@ -45,7 +45,12 @@ MODULE Exceptions
   END TYPE TypeError
 
 
+  TYPE, PUBLIC, EXTENDS(Error) :: ValueError
+     !An error because the value of a variable wasn't right somehow
 
+     CHARACTER(MX_BFR), PUBLIC :: value
+
+  END TYPE ValueError
 
   
   TYPE, PUBLIC, EXTENDS(Error) :: IOError

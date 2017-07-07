@@ -14,7 +14,15 @@ MODULE CoreParsers
   IMPLICIT NONE
   PRIVATE
 
-  CHARACTER(1), PARAMETER :: SECEND='}'
+  CHARACTER(*), PARAMETER :: SECEND='}'
+  CHARACTER(*), PARAMETER :: SECMAT='{materials'
+  CHARACTER(*), PARAMETER :: SECREF='{reflectors'
+  CHARACTER(*), PARAMETER :: SECISO='{isotopes'
+  CHARACTER(*), PARAMETER :: SECROD='{rods'
+  CHARACTER(*), PARAMETER :: SECLOAD='{coremap'
+  CHARACTER(*), PARAMETER :: SECOPERT='{cycles'
+  CHARACTER(*), PARAMETER :: SECOPTS='{options'
+  CHARACTER(*), PARAMETER :: EMPTY=''
   
   TYPE, PUBLIC, EXTENDS(FileParser) :: CoreFileParser
      !A Worker that reads the general input that defines the core in stages. This is just the
@@ -65,7 +73,7 @@ CONTAINS
     DO WHILE (io .EQ. 0)
        restart = .TRUE.
        line = clean(line)
-       SELECT CASE (sechead(line))
+       SELECT CASE (TRIM(ADJUSTL(line)))
        CASE (SECMAT)
           prsr => self%mat_prsr
        CASE (SECREF)

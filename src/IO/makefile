@@ -4,7 +4,7 @@ BD = ../build
 VPATH = $(BD)
 MODP = -I$(BD) -J$(BD)
 
-all: parsers.o materialparsers.o
+all: parsers.o materialparsers.o reflectorparsers.o
 
 %.mod : %.o ;
 
@@ -13,6 +13,9 @@ parsers.o :
 
 materialparsers.o: parsers.mod
 	$(F03) $(FFLAGS) -c $(MODP) materialparsers.f03 -o $(BD)/$@
+reflectorparsers.o: parsers.mod
+	$(F03) $(FFLAGS) -c $(MODP) reflectorparsers.f03 -o $(BD)/$@
+
 MatParseTest.x : materialparsers.o
 	$(F03) $(FFLAGS) $(MODP) $(BD)/materialparsers.o $(BD)/parsers.o $(BD)/lists.o \
 	$(BD)/linelists.o $(BD)/exceptions.o $(BD)/seclists.o $(BD)/mathutils.o $(BD)/strutils.o \
