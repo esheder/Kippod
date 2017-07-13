@@ -14,9 +14,16 @@ MODULE Materials
   PRIVATE
 
   TYPE, PUBLIC :: Material
+     !A material is a data type that contains the metadata and data of a given core component.
+     !Fuel rods are made up of fuel regions, spacer regions and the like, often homogenized with
+     !the sorrounding moderator. This is basically a way to get information for the cross sections
+     !using a core section state, such as temperature, burnup or boron content.
      !TODO: Finish this definition
-
-     CHARACTER(MX_BFR) :: name
+     PRIVATE
+     CHARACTER(:), ALLOCATABLE, PUBLIC :: name
+     CHARACTER(:), DIMENSION(:), ALLOCATABLE :: files
+     INTEGER, DIMENSION(:), ALLOCATABLE :: sets
+     LOGICAL :: burnable
 
    CONTAINS
      PROCEDURE, PASS :: init
