@@ -11,7 +11,6 @@ MODULE Exceptions
   IMPLICIT NONE
   PRIVATE
 
-  INTEGER, PARAMETER, PUBLIC :: MX_ERR_MSG_SIZE = 500
   INTEGER, PARAMETER, PUBLIC :: ERRCODE_GENERAL = 1
   INTEGER, PARAMETER, PUBLIC :: ERRCODE_URGENT = 2
   INTEGER, PARAMETER, PUBLIC :: ERRCODE_FAIL = 3
@@ -20,12 +19,13 @@ MODULE Exceptions
      !A general exception. You know what these are: They arise, but they might not be actual
      !errors. They're just things that interrupt the runtime.
      PRIVATE
-     CHARACTER(MX_ERR_MSG_SIZE) :: msg
+     CHARACTER(:), ALLOCATABLE :: msg
      LOGICAL :: flag = .FALSE.
    CONTAINS
      PROCEDURE, PUBLIC, PASS :: raise => raise_exception
      PROCEDURE, PUBLIC, PASS :: catch => catch_exception
      PROCEDURE, PUBLIC, PASS :: print => print_exception
+     PROCEDURE, PUBLIC, PASS :: del => del
   END TYPE Exception
 
 
@@ -48,7 +48,7 @@ MODULE Exceptions
   TYPE, PUBLIC, EXTENDS(Error) :: ValueError
      !An error because the value of a variable wasn't right somehow
 
-     CHARACTER(MX_BFR), PUBLIC :: value
+     CHARACTER(:), PUBLIC, ALLOCATABLE :: value
 
   END TYPE ValueError
 
@@ -56,7 +56,7 @@ MODULE Exceptions
   TYPE, PUBLIC, EXTENDS(Error) :: IOError
      !An error concenrning Input/Output OS errors. Mostly errors with files.
      INTEGER :: IOSTAT
-     CHARACTER(MX_PATHLENGTH) :: fpath
+     CHARACTER(:), ALLOCATABLE :: fpath
      
    CONTAINS
      PROCEDURE, PUBLIC, PASS :: set_info => set_fileIO
@@ -69,19 +69,18 @@ CONTAINS
 
 
 
+  SUBROUTINE del(self)
+    CLASS(Exception), INTENT(INOUT) :: self
+    IF (ALLOCATED(self%msg)) DEALLOCATE(self%msg)
+    self%flag = .FALSE.
 
+  END SUBROUTINE del
   
   SUBROUTINE raise_exception(self, msg)
     CLASS(Exception), INTENT(INOUT) :: self
     CHARACTER(*), INTENT(IN) :: msg
-
-    IF (LEN(msg) .GT. MX_ERR_MSG_SIZE) THEN
-       PRINT*, "Error message too long! The error message was:"
-       PRINT*, msg
-    ELSE
-       self%msg = TRIM(msg)
-       self%flag = .TRUE.
-    END IF
+    self%msg = TRIM(msg)
+    self%flag = .TRUE.
 
   END SUBROUTINE raise_exception
 

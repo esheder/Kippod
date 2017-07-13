@@ -36,7 +36,7 @@ MODULE Parsers
   TYPE, PUBLIC, ABSTRACT, EXTENDS(Parser) :: FileParser
      !A Worker that works with a file
      PRIVATE
-     CHARACTER(MX_PATHLENGTH) :: path
+     CHARACTER(:), ALLOCATABLE :: path
      INTEGER :: pipe = -1
      INTEGER :: status = F_CLOSED
    CONTAINS
@@ -132,7 +132,7 @@ CONTAINS
   SUBROUTINE breakdef(self, def, err, typ, msg)
     CLASS(DeflineParser), INTENT(IN) :: self
     CHARACTER(*), INTENT(IN) :: def
-    CHARACTER(MX_BFR), INTENT(OUT) :: typ, msg
+    CHARACTER(:), ALLOCATABLE, INTENT(OUT) :: typ, msg
     TYPE(ValueError), INTENT(OUT) :: err
     INTEGER :: k
     k = INDEX(def, '=')

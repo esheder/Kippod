@@ -17,9 +17,10 @@ MODULE linelists
   TYPE, PUBLIC, EXTENDS(LinkedList) :: LineList
      !A linked list node that contains a string.
      PRIVATE
-     CHARACTER(MX_BFR), PUBLIC :: line = ''
+     CHARACTER(:), PUBLIC, ALLOCATABLE :: line 
    CONTAINS
      PROCEDURE, PASS :: print => print_lines
+     PROCEDURE, PASS, PUBLIC :: destructor => destroy
   END TYPE LineList
   
   INTERFACE LineList
@@ -31,11 +32,21 @@ MODULE linelists
   END INTERFACE ListDowncast
 
 CONTAINS
+
+  RECURSIVE SUBROUTINE destroy(self)
+    CLASS(LineList), INTENT(INOUT) :: self
+    IF (ALLOCATED(self%line)) DEALLOCATE(self%line)
+    IF (ASSOCIATED(self%next)) THEN
+       CALL self%next%destructor()
+       DEALLOCATE(self%next)
+    END IF
+  END SUBROUTINE destroy
   
   FUNCTION constructor_LineList(line) RESULT(node)
     CLASS(LineList), POINTER :: node
     CHARACTER(*), INTENT(IN) :: line
 
+    NULLIFY(node)
     ALLOCATE(node)
     CALL node%init()
     node%line = line
@@ -87,19 +98,19 @@ CONTAINS
   
   FUNCTION split(line) RESULT(wordlist)
     !Assumes the line is left adjusted and trimmed.
+    CHARACTER(*), INTENT(IN) :: line
     CLASS(LineList), POINTER :: wordlist
     CLASS(LineList), POINTER :: tmp
-    CHARACTER(*), INTENT(IN) :: line
     INTEGER :: s,e
 
     s = 1
+    NULLIFY(wordlist)
+    NULLIFY(tmp)
     DO WHILE (s .LE. LEN(line))
        e = INDEX(line(s:), ' ') - 1
        IF (e .LE. 0) e = LEN(line(s:))
        IF (s .EQ. 1) THEN
-          ALLOCATE(wordlist)
-          CALL wordlist%init()
-          wordlist%line = line(s:s+e)
+          wordlist => LineList(line(s:s+e))
        ELSE
           tmp => LineList(line(s:s+e))
           CALL wordlist%append(tmp)
@@ -107,6 +118,7 @@ CONTAINS
        s = s + e + 1
     END DO
 
+    NULLIFY(tmp)
     wordlist => ListDowncast(wordlist%first)
 
   END FUNCTION split

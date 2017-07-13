@@ -58,7 +58,7 @@ CONTAINS
     CLASS(Exception), INTENT(OUT) :: err
     CLASS(LineList), POINTER :: lines
     CLASS(LinesParser), POINTER :: prsr
-    CHARACTER(MX_BFR) :: line
+    CHARACTER(:), ALLOCATABLE :: line
     INTEGER :: io
     LOGICAL :: restart
 

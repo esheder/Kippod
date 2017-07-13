@@ -20,7 +20,7 @@ MODULE Lists
      CLASS(LinkedList), PUBLIC, POINTER :: first => NULL()
      CLASS(LinkedList), PUBLIC, POINTER :: last => NULL()
    CONTAINS
-     PROCEDURE, PASS :: destructor
+     PROCEDURE, PASS :: destructor => destroy_list
      PROCEDURE, PASS :: init
      PROCEDURE, PASS :: append
   END TYPE LinkedList
@@ -44,13 +44,13 @@ CONTAINS
     
   END SUBROUTINE init
   
-  RECURSIVE SUBROUTINE destructor(self)
+  RECURSIVE SUBROUTINE destroy_list(self)
     CLASS(LinkedList), INTENT(INOUT) :: self
     IF (ASSOCIATED(self%next)) THEN
        CALL self%next%destructor()
        DEALLOCATE(self%next)
     END IF
-  END SUBROUTINE destructor
+  END SUBROUTINE destroy_list
 
   SUBROUTINE append(self, node)
     !Current implementation allows the creation of a looping chain. Beware of infinite loops.

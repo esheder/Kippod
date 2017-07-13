@@ -20,8 +20,8 @@ MODULE Reflectors
 
      TYPE(Material), POINTER :: mat
      CHARACTER(2) :: direc
-     CHARACTER(MX_BFR) :: name
-     CHARACTER(MX_BFR) :: mat_name
+     CHARACTER(:), ALLOCATABLE :: name
+     CHARACTER(:), ALLOCATABLE :: mat_name
      REAL(SRK) :: width
      INTEGER :: meshp
      INTEGER :: placement
@@ -56,7 +56,7 @@ CONTAINS
     TYPE(Material), DIMENSION(:), INTENT(IN), TARGET :: mats
     TYPE(Error), INTENT(OUT) :: err
     INTEGER :: i
-    CHARACTER(MX_BFR) :: msg
+    CHARACTER(:), ALLOCATABLE :: msg
     DO i=1, SIZE(mats)
        IF (mats(i)%name .EQ. self%mat_name) THEN
           self%mat => mats(i)

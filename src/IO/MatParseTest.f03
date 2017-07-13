@@ -9,8 +9,8 @@ PROGRAM MatParseTest
   IMPLICIT NONE
 
   TYPE(SectionList), POINTER :: sec
-  TYPE(LineList), POINTER :: fln
-  TYPE(LineList), POINTER :: ln
+  TYPE(LineList), POINTER :: fln => null()
+  TYPE(LineList), POINTER :: ln => null()
   TYPE(MaterialParser) :: mp
   TYPE(ValueError) :: err
 
@@ -25,9 +25,11 @@ PROGRAM MatParseTest
 
   CALL mp%parse(sec, err)
   IF (err%catch()) CONTINUE
+  CALL err%del()
 
   CALL mp%destructor()
 
+  !IF (ASSOCIATED(fln)) WRITE(*,*) 'poop'
   fln => LineList('{materials')
   ln => LineList('FUEL file=/home/eshedm/Yourmom/Crossections.ext set=1 burn=1')
   CALL fln%append(ln)
@@ -37,5 +39,7 @@ PROGRAM MatParseTest
   
   sec%fline => fln
   CALL mp%parse(sec, err)
+
+  CALL mp%destructor()
 
 END PROGRAM MatParseTest

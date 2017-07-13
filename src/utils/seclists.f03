@@ -18,7 +18,7 @@ MODULE Seclists
      ! A Linked list node that contains a line-list.
      PRIVATE
      CLASS(LineList), POINTER, PUBLIC :: fline
-     CHARACTER(MX_BFR), PUBLIC :: name
+     CHARACTER(:), PUBLIC, ALLOCATABLE :: name
    CONTAINS
      PROCEDURE, PASS :: destructor => destroy
   END TYPE SectionList
@@ -44,11 +44,12 @@ CONTAINS
   
   RECURSIVE SUBROUTINE destroy(self)
     CLASS(SectionList) , INTENT(INOUT):: self
+    IF (ASSOCIATED(self%fline)) THEN
+       CALL self%fline%destructor()
+       DEALLOCATE(self%fline)
+       IF (ALLOCATED(self%name)) DEALLOCATE(self%name)
+    END IF
     IF (ASSOCIATED(self%next)) THEN
-       IF (ASSOCIATED(self%fline)) THEN
-          CALL self%fline%destructor()
-          DEALLOCATE(self%fline)
-       END IF
        CALL self%next%destructor()
        DEALLOCATE(self%next)
     END IF

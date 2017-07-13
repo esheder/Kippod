@@ -61,22 +61,28 @@ CONTAINS
     CLASS(LineList), POINTER :: line
     CLASS(LineList), POINTER :: words
     INTEGER :: i, j, num_lines, set, burn
-    CHARACTER(MX_BFR) :: msg, name, path, typ, frmt
+    CHARACTER(:), ALLOCATABLE :: msg, name, path, typ, val
+    CHARACTER(MX_BFR) :: emsg, frmt
 
     IF (ASSOCIATED(self%raw_sec)) DEALLOCATE(self%raw_sec)
     self%raw_sec => sec
     num_lines = LEN(self%raw_sec)
     ALLOCATE(self%materials(num_lines-1))
     line => self%raw_sec%fline
-
+    
+    NULLIFY(words)
     lns:DO i=1, num_lines
        line => ListDowncast(line%next)
+       IF (ASSOCIATED(words)) THEN
+          CALL words%destructor()
+          NULLIFY(words)
+       END IF
        words => self%breakline(line%line)
        IF (LEN(words) .NE. MATLINE_LEN) THEN
           frmt = '(1X, A, I3, 1X, A, I3, 1X, A, A)'
-          WRITE(msg, frmt) 'Wrong word count in material line. CNT was ', LEN(words), &
-                        & 'but must be ', MATLINE_LEN, 'Line was: ', TRIM(line%line)
-          CALL err%raise(msg)
+          WRITE(emsg, frmt) 'Wrong word count in material line. CNT was ', LEN(words), &
+               & 'but must be ', MATLINE_LEN, 'Line was: ', TRIM(line%line)
+          CALL err%raise(emsg)
           CALL err%print()
           RETURN
        END IF
@@ -85,9 +91,12 @@ CONTAINS
        name = words%line
        words => ListDowncast(words%next)
        wrds:  DO j=1, MATLINE_LEN - 1
+          IF (ALLOCATED(msg)) DEALLOCATE(msg)
+          IF (ALLOCATED(val)) DEALLOCATE(val)
+          IF (ALLOCATED(typ)) DEALLOCATE(typ)
           msg = words%line
           words => ListDowncast(words%next)
-          CALL self%breakdef(msg, err, typ, msg)
+          CALL self%breakdef(msg, err, typ, val)
           IF (err%catch()) THEN
              CALL err%print()
              frmt = '(1X, A, I3, A, A)'
@@ -98,22 +107,30 @@ CONTAINS
           WRITE(frmt, '(A, I10, A)') "(I", MX_BFR, ")"
           SELECT CASE (lowercase(TRIM(typ)))
           CASE (FLPTH)
-             path = msg
+             path = val
           CASE (SETNM)
-             READ(msg, frmt) set
+             READ(val, frmt) set
           CASE (BURNFLG)
-             READ(msg, frmt) burn
+             READ(val, frmt) burn
           CASE DEFAULT
              frmt = '(1X, A, A, A, I3, A, A)'
-             WRITE(msg, frmt) 'Unrecognized material attribute ', lowercase(TRIM(typ)), &
+             WRITE(emsg, frmt) 'Unrecognized material attribute ', lowercase(TRIM(typ)), &
                             & ' at line no. ', i, '. The line was:', TRIM(words%line)
-             CALL err%raise(msg)
+             CALL err%raise(emsg)
              CALL err%print()
              RETURN
           END SELECT
        END DO wrds
        
        !CALL self%materials(i)%init(name, path, set, burn, err)
+       IF (ASSOCIATED(words)) THEN
+          CALL words%destructor()
+          NULLIFY(words)
+       END IF
+       IF (ASSOCIATED(line)) THEN
+          CALL line%destructor()
+          NULLIFY(words)
+       END IF
 
     END DO lns
        

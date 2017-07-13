@@ -51,7 +51,7 @@ CONTAINS
     CLASS(ValueError), INTENT(OUT) :: err
     INTEGER :: i, j, num_lines, mesh, loc
     REAL(SRK) :: width
-    CHARACTER(MX_BFR) :: frmt, name, material, typ, msg
+    CHARACTER(:), ALLOCATABLE :: frmt, name, material, typ, msg
     CHARACTER(2) :: direct
 
     !Get rid of previous information

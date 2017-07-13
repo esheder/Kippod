@@ -26,7 +26,7 @@ MODULE Materials
      LOGICAL :: burnable
 
    CONTAINS
-     PROCEDURE, PASS :: init
+     PROCEDURE, PASS, PUBLIC :: init
   END TYPE Material
 
 CONTAINS
