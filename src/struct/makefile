@@ -1,7 +1,6 @@
 SRCOBJ = $(wildcard *.f03)
 MODOBJ = $(SRCOBJ:.f03=.mod)
 VPATH = ../build
-MODP = -I../build -J../build
 BD = ../build
 
 all: materials.o reflectors.o

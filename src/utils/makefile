@@ -3,7 +3,6 @@ IODIR = IO
 BINDIR = ../bin/
 SRCOBJ = $(wildcard *.f03)
 MODOBJ = $(SRCOBJ:.f03=.mod)
-MODP = -I../build -J../build
 VPATH = ../build
 BD = ../build
 

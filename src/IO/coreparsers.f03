@@ -7,9 +7,13 @@
 !
 
 MODULE CoreParsers
+  USE Parameters
   USE Parsers
+  USE MaterialParsers
+  USE ReflectorParsers
   USE Exceptions
   USE Lists
+  USE LineLists
   USE Seclists
   IMPLICIT NONE
   PRIVATE
@@ -29,13 +33,13 @@ MODULE CoreParsers
      !first step, as sections must be parsed with a set of specialized string parsers.
      PRIVATE
      !TYPE(SectionParser) :: sec_prsr
-     TYPE(MaterialsParser) :: mat_prsr
-     TYPE(ReflectorsParser) :: ref_prsr
-     TYPE(IsotopeParser) :: iso_prsr
-     TYPE(RodsParser) :: rod_prsr
-     TYPE(LoadingParser) :: load_prsr
-     TYPE(OperationParser) :: oprt_prsr
-     TYPE(OptionsParser) :: opt_prsr
+     TYPE(MaterialParser), POINTER :: mat_prsr
+     TYPE(ReflectorsParser), POINTER :: ref_prsr
+     !TYPE(IsotopeParser) :: iso_prsr
+     !TYPE(RodsParser) :: rod_prsr
+     !TYPE(LoadingParser) :: load_prsr
+     !TYPE(OperationParser) :: oprt_prsr
+     !TYPE(OptionsParser) :: opt_prsr
      TYPE(SectionList), POINTER :: secs => NULL()
    CONTAINS
      PROCEDURE, PASS :: parse_file => core_parse
@@ -54,21 +58,23 @@ CONTAINS
     !Parse the core file into a bunch of sections, and then parse each section using its specific
     !parser.
 
-    TYPE(CoreFileParser), INTENT(INOUT) :: self
+    CLASS(CoreFileParser), INTENT(INOUT) :: self
     CLASS(Exception), INTENT(OUT) :: err
+    TYPE(IOError) :: err2
     CLASS(LineList), POINTER :: lines
-    CLASS(LinesParser), POINTER :: prsr
-    CHARACTER(:), ALLOCATABLE :: line
-    INTEGER :: io
+    CLASS(LineList), POINTER :: p
+    CLASS(DeflineParser), POINTER :: prsr
+    CHARACTER(MX_BFR) :: line
+    INTEGER :: io, pp
     LOGICAL :: restart
 
-    CALL self%open_file(err)
-    IF (err%catch_exception()) THEN
-       CALL err%print()
+    CALL self%open_file(err2)
+    IF (err2%catch()) THEN
+       CALL err2%print()
        STOP(1)
     END IF
     
-    READ(self%pipe, *, IOSTAT=io) line
+    READ(UNIT=self%pipe, FMT=*, IOSTAT=io) line
     line = clean(line)
     DO WHILE (io .EQ. 0)
        restart = .TRUE.
@@ -79,26 +85,27 @@ CONTAINS
        CASE (SECREF)
           prsr => self%ref_prsr
        CASE (SECISO)
-          prsr => self%iso_prsr
+!          prsr => self%iso_prsr
        CASE (SECROD)
-          prsr => self%rod_prsr
+!          prsr => self%rod_prsr
        CASE (SECLOAD)
-          prsr => self%load_prsr
+!          prsr => self%load_prsr
        CASE (SECOPERT)
-          prsr => self%oprt_prsr
+!          prsr => self%oprt_prsr
        CASE (SECOPTS)
-          prsr => self%opt_prsr
+!          prsr => self%opt_prsr
        CASE (SECEND)
           restart = .FALSE.
           CALL prsr%parse(lines, err)
-          IF (err%catch_exception()) THEN
+          IF (err%catch()) THEN
              CALL err%print()
              STOP(1)
           END IF
        CASE (EMPTY)
           restart = .FALSE.
        CASE DEFAULT
-          CALL lines%append(LineList(line))
+          p => LineList(line)
+          CALL lines%append(p)
           restart = .FALSE.
        END SELECT
 
@@ -110,12 +117,25 @@ CONTAINS
        READ(self%pipe, *, IOSTAT=io) line
     END DO
 
-    CALL self%close_file(err)
-    IF (err%catch_exception()) THEN
-       CALL err%print()
+    CALL self%close_file(err2)
+    IF (err2%catch()) THEN
+       CALL err2%print()
        STOP(1)
     END IF
 
   END SUBROUTINE core_parse
 
-END MODULE CoreParser
+  FUNCTION clean(bfr) RESULT (ln)
+    CHARACTER(*), INTENT(IN) :: bfr
+    CHARACTER(:), ALLOCATABLE :: ln
+    INTEGER :: k
+    !First clear all after comments. Comments by !, as # is saved for other things.
+    k = INDEX(bfr, '!')
+    IF (k .GT. 0) THEN
+       ln = TRIM(ADJUSTL(bfr(1:k-1)))
+    ELSE
+       ln = TRIM(ADJUSTL(bfr))
+    END IF
+  END FUNCTION clean
+
+END MODULE CoreParsers

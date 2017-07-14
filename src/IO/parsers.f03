@@ -21,7 +21,7 @@ MODULE Parsers
   TYPE, PUBLIC, ABSTRACT :: Parser
      !A worker that parses a piece of information.
      PRIVATE
-     
+   CONTAINS
   END TYPE Parser
 
   TYPE, PUBLIC, ABSTRACT, EXTENDS(Parser) :: DeflineParser
@@ -30,6 +30,7 @@ MODULE Parsers
    CONTAINS
      PROCEDURE, PASS, NON_OVERRIDABLE :: breakline
      PROCEDURE, PASS, NON_OVERRIDABLE :: breakdef
+     PROCEDURE(lnparse), PASS, DEFERRED :: parse
 
   END TYPE DeflineParser
 
@@ -37,24 +38,35 @@ MODULE Parsers
      !A Worker that works with a file
      PRIVATE
      CHARACTER(:), ALLOCATABLE :: path
-     INTEGER :: pipe = -1
+     INTEGER, PUBLIC :: pipe = -1
      INTEGER :: status = F_CLOSED
    CONTAINS
      PROCEDURE, PASS, NON_OVERRIDABLE :: associate_file
      PROCEDURE, PASS, NON_OVERRIDABLE :: open_file
      PROCEDURE, PASS, NON_OVERRIDABLE :: close_file
-     PROCEDURE(laparse), PASS, DEFERRED :: parse_file
+     PROCEDURE(flparse), PASS, DEFERRED :: parse_file
   END TYPE FileParser
 
   ABSTRACT INTERFACE
-     SUBROUTINE laparse(self, err)
+     SUBROUTINE flparse(self, err)
        IMPORT FileParser
        IMPORT Exception
        CLASS(FileParser), INTENT(INOUT) :: self
        CLASS(Exception), INTENT(OUT) :: err
-     END SUBROUTINE laparse
+     END SUBROUTINE flparse
   END INTERFACE
 
+  ABSTRACT INTERFACE
+     SUBROUTINE lnparse(self, sec, err)
+       IMPORT DeflineParser
+       IMPORT LineList
+       IMPORT Exception
+       CLASS(DeflineParser), INTENT(INOUT) :: self
+       CLASS(LineList), TARGET, INTENT(IN) :: sec
+       CLASS(Exception), INTENT(OUT) :: err
+     END SUBROUTINE lnparse
+  END INTERFACE
+  
 CONTAINS
 
 

@@ -25,6 +25,7 @@ MODULE Exceptions
      PROCEDURE, PUBLIC, PASS :: raise => raise_exception
      PROCEDURE, PUBLIC, PASS :: catch => catch_exception
      PROCEDURE, PUBLIC, PASS :: print => print_exception
+     PROCEDURE, PUBLIC, PASS :: get_msg => get_message
      PROCEDURE, PUBLIC, PASS :: del => del
   END TYPE Exception
 
@@ -66,8 +67,12 @@ MODULE Exceptions
 CONTAINS
 
 
-
-
+  
+  FUNCTION get_message(self) RESULT (msg)
+    CLASS(Exception), INTENT(IN) :: self
+    CHARACTER(:), ALLOCATABLE :: msg
+    msg = self%msg
+  END FUNCTION get_message
 
   SUBROUTINE del(self)
     CLASS(Exception), INTENT(INOUT) :: self

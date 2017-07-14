@@ -5,14 +5,18 @@ SOLVEDIR = solvers
 UTILDIR = utils
 BINDIR = ../bin
 BUILDIR = build
+BD = ../build
 srcdirs = . $(IODIR) $(SOLVEDIR) $(STRCTDIR) $(UTILDIR) $(BUILDIR)
 
 F03 = gfortran
 FFLAGS = -O2
 MKFLGS = --no-print-directory
+#MODP = -I$(BD) -module $(BD)
+MODP = -I$(BD) -J$(BD)
 
 export F03
 export FFLAGS
+export MODP
 
 all: clean cutils structures cIO csolvers ;
 

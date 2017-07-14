@@ -27,7 +27,7 @@ MODULE MaterialParsers
      ! A parser that takes the material section of a cip-like file and stores information for
      ! creation by a material constructor.
 
-     TYPE(SectionList), POINTER :: raw_sec
+     TYPE(LineList), POINTER :: raw_sec
      TYPE(Material), DIMENSION(:), ALLOCATABLE :: materials
 
    CONTAINS
@@ -56,8 +56,9 @@ CONTAINS
     !Parse the material lines to create materials.
     !
     CLASS(MaterialParser), INTENT(INOUT) :: self
-    CLASS(SectionList), TARGET, INTENT(IN) :: sec
-    CLASS(ValueError), INTENT(OUT) :: err
+    CLASS(LineList), TARGET, INTENT(IN) :: sec
+    CLASS(Exception), INTENT(OUT) :: err
+    TYPE(ValueError) :: err2
     CLASS(LineList), POINTER :: line
     CLASS(LineList), POINTER :: words
     INTEGER :: i, j, num_lines, set, burn
@@ -68,7 +69,7 @@ CONTAINS
     self%raw_sec => sec
     num_lines = LEN(self%raw_sec)
     ALLOCATE(self%materials(num_lines-1))
-    line => self%raw_sec%fline
+    line => self%raw_sec
     
     NULLIFY(words)
     lns:DO i=1, num_lines
@@ -96,11 +97,12 @@ CONTAINS
           IF (ALLOCATED(typ)) DEALLOCATE(typ)
           msg = words%line
           words => ListDowncast(words%next)
-          CALL self%breakdef(msg, err, typ, val)
-          IF (err%catch()) THEN
-             CALL err%print()
+          CALL self%breakdef(msg, err2, typ, val)
+          IF (err2%catch()) THEN
+             CALL err2%print()
              frmt = '(1X, A, I3, A, A)'
              WRITE(*, frmt) 'This happened in material line ', i, '. Line was: ', TRIM(line%line)
+             CALL err%raise(err2%get_msg())
              RETURN
           END IF
 

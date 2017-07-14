@@ -32,7 +32,7 @@ MODULE ReflectorParsers
      !
      PRIVATE
 
-     TYPE(SectionList), POINTER :: raw_sec
+     TYPE(LineList), POINTER :: raw_sec
      TYPE(Reflector), DIMENSION(:), ALLOCATABLE :: reflectors
 
    CONTAINS
@@ -45,10 +45,11 @@ CONTAINS
   SUBROUTINE parse_lines(self, sec, err)
     !Parse the section
     CLASS(ReflectorsParser), INTENT(INOUT) :: self
-    TYPE(SectionList), TARGET, INTENT(IN) :: sec
+    CLASS(LineList), TARGET, INTENT(IN) :: sec
     CLASS(LineList), POINTER :: line
     CLASS(LineList), POINTER :: words
-    CLASS(ValueError), INTENT(OUT) :: err
+    CLASS(Exception), INTENT(OUT) :: err
+    TYPE(ValueError) :: err2
     INTEGER :: i, j, num_lines, mesh, loc
     REAL(SRK) :: width
     CHARACTER(:), ALLOCATABLE :: frmt, name, material, typ, msg
@@ -59,7 +60,7 @@ CONTAINS
     self%raw_sec => sec
     num_lines = LEN(sec)
     ALLOCATE(self%reflectors(num_lines-1))
-    line => self%raw_sec%fline
+    line => self%raw_sec
 
     lns:DO i=1, num_lines
        line => ListDowncast(line%next)
@@ -77,11 +78,12 @@ CONTAINS
        wrds:  DO j=1, REFLINE_LEN - 1
           msg = words%line
           words => ListDowncast(words%next)
-          CALL self%breakdef(msg, err, typ, msg)
-          IF (err%catch()) THEN
-             CALL err%print()
+          CALL self%breakdef(msg, err2, typ, msg)
+          IF (err2%catch()) THEN
+             CALL err2%print()
              frmt = '(1X, A, I3, A, A)'
              WRITE(*, frmt) 'This happened in reflector line ', i, '. Line was: ', TRIM(line%line)
+             CALL err%raise(err2%get_msg())
              RETURN
           END IF
 
