@@ -2,7 +2,7 @@
 IODIR = IO
 BINDIR = ../bin/
 SRCOBJ = $(wildcard *.f03)
-MODOBJ = $(SRCOBJ:.f03=.mod)
+MODOBJ = $(SRCOBJ:.f03=.o)
 VPATH = ../build
 BD = ../build
 
@@ -19,6 +19,9 @@ lists.o : exceptions.mod
 
 seclists.o : lists.mod linelists.mod parameters.mod
 	$(F03) $(FFLAGS) -c $(MODP) seclists.f03 -o $(BD)/$@
+
+trees.o : lists.mod
+	$(F03) $(FFLAGS) -c $(MODP) trees.f03 -o $(BD)/$@
 
 
 %.o : %.f03
