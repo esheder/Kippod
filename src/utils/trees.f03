@@ -8,11 +8,12 @@
 
 MODULE TreeS
   USE Lists
+  USE Exceptions
   
   IMPLICIT NONE
   PRIVATE
 
-  TYPE, PUBLIC :: TreeNode
+  TYPE, PUBLIC, ABSTRACT :: TreeNode
      !A node in a tree structure.
      !
      CLASS(TreeNode), POINTER :: parent => NULL()
@@ -20,6 +21,8 @@ MODULE TreeS
 
    CONTAINS
      PROCEDURE, PASS :: init
+     PROCEDURE, PASS :: root
+     PROCEDURE, PASS :: add_child
   END TYPE TreeNode
 
   TYPE, PUBLIC, EXTENDS(LinkedList) :: TreeList
@@ -41,5 +44,36 @@ CONTAINS
     IF (PRESENT(children)) self%children => children
 
   END SUBROUTINE init
+
+  FUNCTION root(self) RESULT (node)
+    !Get the root of a tree from its node.
+    CLASS(TreeNode), TARGET, INTENT(IN) :: self
+    CLASS(TreeNode), POINTER :: node
+
+    node => self
+    DO WHILE (ASSOCIATED(node%parent))
+       node => node%parent
+    END DO
+  END FUNCTION root
+
+  SUBROUTINE add_child(self, child, err)
+    CLASS(TreeNode), TARGET, INTENT(INOUT) :: self
+    CLASS(TreeNode), TARGET, INTENT(INOUT) :: child
+    TYPE(TreeList) :: node
+    TYPE(Error), INTENT(OUT) :: err
+    IF (ASSOCIATED(child%parent)) THEN
+       CALL err%raise('Child already has a parent but a new one was assigned to it!')
+       RETURN
+    END IF
+    child%parent => self
+    IF (ASSOCIATED(self%children%val)) THEN
+       CALL node%init()
+       node%val => child
+       CALL self%children%append(node)
+    ELSE
+       self%children%val => child
+    END IF
+
+  END SUBROUTINE add_child
 
 END MODULE Trees

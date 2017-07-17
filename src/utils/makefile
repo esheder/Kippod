@@ -19,9 +19,12 @@ lists.o : exceptions.mod
 
 seclists.o : lists.mod linelists.mod parameters.mod
 	$(F03) $(FFLAGS) -c $(MODP) seclists.f03 -o $(BD)/$@
+reallists.o : lists.mod parameters.mod
+	$(F03) $(FFLAGS) -c $(MODP) reallists.f03 -o $(BD)/$@
 
 trees.o : lists.mod
 	$(F03) $(FFLAGS) -c $(MODP) trees.f03 -o $(BD)/$@
+
 
 
 %.o : %.f03
