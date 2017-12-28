@@ -21,7 +21,7 @@ PROGRAM MatParseTest
   IF (err%catch()) CONTINUE
   CALL err%del()
 
-  CALL mp%destructor()
+  CALL mp%destroy()
 
   !IF (ASSOCIATED(fln)) WRITE(*,*) 'poop'
   fln => LineList('{materials')
@@ -30,6 +30,6 @@ PROGRAM MatParseTest
 
   CALL mp%parse(fln, err)
 
-  CALL mp%destructor()
+  CALL mp%destroy()
 
 END PROGRAM MatParseTest

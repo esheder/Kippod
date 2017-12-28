@@ -20,7 +20,7 @@ MODULE linelists
      CHARACTER(:), PUBLIC, ALLOCATABLE :: line 
    CONTAINS
      PROCEDURE, PASS :: print => print_lines
-     PROCEDURE, PASS, PUBLIC :: destructor => destroy
+     PROCEDURE, PASS, PUBLIC :: destroy => destroy
   END TYPE LineList
   
   INTERFACE LineList
@@ -34,10 +34,10 @@ MODULE linelists
 CONTAINS
 
   RECURSIVE SUBROUTINE destroy(self)
-    CLASS(LineList), INTENT(INOUT) :: self
+    CLASS(LineList), TARGET, INTENT(INOUT) :: self
     IF (ALLOCATED(self%line)) DEALLOCATE(self%line)
     IF (ASSOCIATED(self%next)) THEN
-       CALL self%next%destructor()
+       CALL self%next%destroy()
        DEALLOCATE(self%next)
     END IF
   END SUBROUTINE destroy

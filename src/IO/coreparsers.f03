@@ -110,7 +110,7 @@ CONTAINS
        END SELECT
 
        IF (restart) THEN
-          CALL lines%destructor()
+          CALL lines%destroy()
           lines => LineList(TRIM(line))
        END IF
           

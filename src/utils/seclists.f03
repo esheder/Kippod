@@ -20,7 +20,7 @@ MODULE Seclists
      CLASS(LineList), POINTER, PUBLIC :: fline
      CHARACTER(:), PUBLIC, ALLOCATABLE :: name
    CONTAINS
-     PROCEDURE, PASS :: destructor => destroy
+     PROCEDURE, PASS :: destroy => destroy
   END TYPE SectionList
   
   INTERFACE SectionList
@@ -43,14 +43,14 @@ CONTAINS
 
   
   RECURSIVE SUBROUTINE destroy(self)
-    CLASS(SectionList) , INTENT(INOUT):: self
+    CLASS(SectionList), TARGET, INTENT(INOUT):: self
     IF (ASSOCIATED(self%fline)) THEN
-       CALL self%fline%destructor()
+       CALL self%fline%destroy()
        DEALLOCATE(self%fline)
        IF (ALLOCATED(self%name)) DEALLOCATE(self%name)
     END IF
     IF (ASSOCIATED(self%next)) THEN
-       CALL self%next%destructor()
+       CALL self%next%destroy()
        DEALLOCATE(self%next)
     END IF
   END SUBROUTINE destroy

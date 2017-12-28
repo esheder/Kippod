@@ -38,7 +38,7 @@ PROGRAM LLTest
   PRINT*, "Selected real kind:", SRK
   PRINT*, "Selected integer kind:", SIK
 
-  CALL root%destructor()
+  CALL root%destroy()
   DEALLOCATE(root)
   NULLIFY(root)
   NULLIFY(cur)
