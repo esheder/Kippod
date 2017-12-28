@@ -32,25 +32,25 @@ MODULE MaterialParsers
 
    CONTAINS
      PROCEDURE, PASS :: parse => parse_lines
-     PROCEDURE, PASS :: destructor
+     PROCEDURE, PASS :: destroy
   END TYPE MaterialParser
 
 CONTAINS
 
-  SUBROUTINE destructor(self)
+  SUBROUTINE destroy(self)
     !Destroy this object.
     !
     CLASS(MaterialParser), INTENT(INOUT) :: self
 
     IF (ASSOCIATED(self%raw_sec)) THEN
-       CALL self%raw_sec%destructor()
+       CALL self%raw_sec%destroy()
        DEALLOCATE(self%raw_sec)
     END IF
 
     IF (ALLOCATED(self%materials)) THEN
        DEALLOCATE(self%materials)
     END IF
-  END SUBROUTINE destructor
+  END SUBROUTINE destroy
 
   SUBROUTINE parse_lines(self, sec, err)
     !Parse the material lines to create materials.
@@ -75,7 +75,7 @@ CONTAINS
     lns:DO i=1, num_lines
        line => ListDowncast(line%next)
        IF (ASSOCIATED(words)) THEN
-          CALL words%destructor()
+          CALL words%destroy()
           NULLIFY(words)
        END IF
        words => self%breakline(line%line)
@@ -126,11 +126,11 @@ CONTAINS
        
        !CALL self%materials(i)%init(name, path, set, burn, err)
        IF (ASSOCIATED(words)) THEN
-          CALL words%destructor()
+          CALL words%destroy()
           NULLIFY(words)
        END IF
        IF (ASSOCIATED(line)) THEN
-          CALL line%destructor()
+          CALL line%destroy()
           NULLIFY(words)
        END IF
 
