@@ -11,7 +11,7 @@ MODULE Rods
   PRIVATE
   !
   CHARACTER(LEN=*),PARAMETER :: modName='Rod'
-  TYPE,ABSTRACT :: Rod
+  TYPE, PUBLIC :: Rod
     !> Length of the rod (m).
     REAL(SRK) :: len
     !> Diameter of the rod (m).
