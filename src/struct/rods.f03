@@ -32,39 +32,39 @@ MODULE Rods
   END TYPE Rod
 !
 !===============================================================================
-  CONTAINS
-!
-!-------------------------------------------------------------------------------
-!> @brief Initializes a Rod object.
-!> @param self The Rod object.
-!> @param length The length of the rod (m).
-!> @param diameter The diameter of the rod (m).
-!> @param mats Vector of materials.
-!> @param heights Vector describing the heights of each materials in the rod. 
-!>
-    SUBROUTINE init_Rod(self, length, diameter, mats, heights)
-      CLASS(Rod),INTENT(INOUT) :: self
-      REAL(SRK) :: length,diameter
-      CLASS(Material), DIMENSION(:), INTENT(IN) :: mats
-      REAL(SRK), DIMENSION(:) :: heights
-      CHARACTER(LEN=*), PARAMETER :: myName='init_Rod'
-
-      self%len = length
-      self%dia = diameter
-      self%materials = mats
-      self%heights = heights
-    ENDSUBROUTINE init_Rod
-!
-!-------------------------------------------------------------------------------
-!> @brief Clears a Rod object.
-!> @param self The Rod object.
-!>
-    SUBROUTINE clear_Rod(self)
-      CLASS(Rod),INTENT(INOUT) :: self
-      CHARACTER(LEN=*),PARAMETER :: myName='clear_Rod'
-
-      DEALLOCATE(self%materials)
-      DEALLOCATE(self%heights)
-    ENDSUBROUTINE clear_Rod
+CONTAINS
+  !
+  !-------------------------------------------------------------------------------
+  !> @brief Initializes a Rod object.
+  !> @param self The Rod object.
+  !> @param length The length of the rod (m).
+  !> @param diameter The diameter of the rod (m).
+  !> @param mats Vector of materials.
+  !> @param heights Vector describing the heights of each materials in the rod. 
+  !>
+  SUBROUTINE init_Rod(self, length, diameter, mats, heights)
+    CLASS(Rod),INTENT(INOUT) :: self
+    REAL(SRK) :: length,diameter
+    CLASS(Material), DIMENSION(:), INTENT(IN) :: mats
+    REAL(SRK), DIMENSION(:) :: heights
+    CHARACTER(LEN=*), PARAMETER :: myName='init_Rod'
+    
+    self%len = length
+    self%dia = diameter
+    self%materials = mats
+    self%heights = heights
+  END SUBROUTINE init_Rod
+  !
+  !-------------------------------------------------------------------------------
+  !> @brief Clears a Rod object.
+  !> @param self The Rod object.
+  !>
+  SUBROUTINE clear_Rod(self)
+    CLASS(Rod),INTENT(INOUT) :: self
+    CHARACTER(LEN=*),PARAMETER :: myName='clear_Rod'
+    
+    DEALLOCATE(self%materials)
+    DEALLOCATE(self%heights)
+  END SUBROUTINE clear_Rod
     !
 ENDMODULE Rods
