@@ -21,6 +21,9 @@ MODULE Rods
     !> Heights of each material in the rod from bottom to top (corresponds to
     !> materials in mats).
     REAL(SRK), DIMENSION(:), ALLOCATABLE :: heights
+    !> Temperatures of each material in this rod. Will probably be fairly even across the core but
+    !> allows for future coupling, though that feature might require a change in how this is stored
+    REAL(SRK), DIMENSION(:), ALLOCATABLE :: temperatures
     CONTAINS
       PROCEDURE, PUBLIC, PASS :: init => init_Rod
       PROCEDURE, PUBLIC, PASS :: clear => clear_Rod
