@@ -1,4 +1,4 @@
-! Module for defining a general rod object (abstract).
+! Module for defining a general rod object
 !   All units are base SI.
 !   Written by Zachary Dodson at first
 !List of changes:
@@ -6,6 +6,7 @@
 !
 MODULE Rods
   USE Parameters
+  USE Materials
   IMPLICIT NONE
   PRIVATE
   !
@@ -21,8 +22,8 @@ MODULE Rods
     !> materials in mats).
     REAL(SRK), DIMENSION(:), ALLOCATABLE :: heights
     CONTAINS
-      PROCEDURE,PASS :: init => init_Rod
-      PROCEDURE,PASS :: clear => clear_Rod
+      PROCEDURE, PUBLIC, PASS :: init => init_Rod
+      PROCEDURE, PUBLIC, PASS :: clear => clear_Rod
   ENDTYPE Rod
 !
 !===============================================================================
@@ -36,12 +37,12 @@ MODULE Rods
 !> @param mats Vector of materials.
 !> @param heights Vector describing the heights of each materials in the rod. 
 !>
-    SUBROUTINE init_Rod(self,length,diameter,mats,heights)
+    SUBROUTINE init_Rod(self, length, diameter, mats, heights)
       CLASS(Rod),INTENT(INOUT) :: self
       REAL(SRK) :: length,diameter
       CLASS(Material), DIMENSION(:), INTENT(IN) :: mats
       REAL(SRK), DIMENSION(:) :: heights
-      CHARACTER(LEN=*),PARAMETER :: myName='init_Rod'
+      CHARACTER(LEN=*), PARAMETER :: myName='init_Rod'
 
       self%len = length
       self%dia = diameter

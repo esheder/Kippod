@@ -36,10 +36,10 @@ CONTAINS
 
   SUBROUTINE init(self, name, dir, mat, width, mesh, loc)
     CLASS(Reflector), INTENT(INOUT) :: self
-    CHARACTER(*), INTENT(IN) :: name
-    CHARACTER(2), INTENT(IN) :: dir
-    CHARACTER(*), INTENT(IN) :: mat
-    REAL(SRK), INTENT(IN) :: width
+    CHARACTER(LEN=*), INTENT(IN) :: name
+    CHARACTER(2), INTENT(IN) :: dir !Direction in core
+    CHARACTER(LEN=*), INTENT(IN) :: mat
+    REAL(KIND=SRK), INTENT(IN) :: width
     INTEGER, INTENT(IN) :: mesh, loc
 
     self%name = name

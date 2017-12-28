@@ -9,6 +9,7 @@
 MODULE Isotopes
   USE Trees
   USE RealLists
+  USE Lists
   USE Exceptions
   USE Parameters
   
@@ -26,14 +27,18 @@ MODULE Isotopes
      CLASS(RealList), POINTER :: yields
    CONTAINS
      PROCEDURE, PASS :: add_isochild
+     PROCEDURE, PASS :: destroy => chain_destroy
   END TYPE IsoTreeNode
 
   TYPE, PUBLIC :: Isotope
      !An isotope
-     CLASS(IsoTreeNode), ALLOCATABLE :: decay_chains
+     CLASS(IsoTreeNode), DIMENSION(:), ALLOCATABLE :: decay_chains
      CHARACTER(:), ALLOCATABLE :: name
      INTEGER(SIK) :: ID
      REAL(SRK) :: weight !Atomic weight
+   CONTAINS
+     PROCEDURE, PASS :: destroy => iso_destroy
+     PROCEDURE, PASS :: init => iso_init
   END TYPE Isotope
 
 CONTAINS
@@ -68,6 +73,43 @@ CONTAINS
     CALL self%yields%append(ynode)
   END SUBROUTINE add_isochild
     
-       
+  SUBROUTINE iso_destroy(self)
+    !Destructor of an isotope
+    CLASS(Isotope), INTENT(INOUT) :: self
+    CLASS(IsoTreeNode), POINTER :: p
+    INTEGER :: i
+    IF (ALLOCATED(self%decay_chains)) THEN
+       DO i=1, SIZE(self%decay_chains)
+          CALL self%decay_chains(i)%destroy()
+       END DO
+       NULLIFY(p)
+       DEALLOCATE(self%decay_chains)
+    END IF
+
+    IF (ALLOCATED(self%name)) DEALLOCATE(self%name)
+
+  END SUBROUTINE iso_destroy
+
+  SUBROUTINE iso_init(self)
+    !TODO: finish this
+    CLASS(Isotope), INTENT(INOUT) :: self
+  END SUBROUTINE iso_init
+
+  SUBROUTINE chain_destroy(self)
+    !Destructor of an isotope tree
+    CLASS(IsoTreeNode), INTENT(INOUT) :: self
+
+    IF (ASSOCIATED(self%halflives)) THEN
+       CALL self%halflives%destroy()
+       NULLIFY(self%halflives)
+    END IF
+    IF (ASSOCIATED(self%yields)) THEN
+       CALL self%yields%destroy()
+       NULLIFY(self%yields)
+    END IF
+    IF (ALLOCATED(self%name)) DEALLOCATE(self%name)
+    CALL tree_destroy(self)
+
+  END SUBROUTINE chain_destroy
   
 END MODULE Isotopes

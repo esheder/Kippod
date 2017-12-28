@@ -5,7 +5,7 @@ Following these guidelines will help the project managers and lead developers un
 # Project Goal
 Our goal is to create an open-source, developer-friendly software for the simulation of nuclear reactors based on a diffusion approximation. These codes most often come in a package of a neutron transport code that supplies homogenized cross sections and a diffusion code. We only concern ourselves with the second part in this project.
 
-Our vision is that best-practices will be share across the academic community, and that this project might someday be used as part of a regulatory review of nuclear reactor safety.
+Our vision is that best practices will be shared across the academic community, and that this project might someday be used as part of a regulatory review of nuclear reactor safety.
 
 # Preferred contributions
 As an open-source project, we are always excited for contributions from our community (which now includes you!).
@@ -17,6 +17,7 @@ This project is currently in its infancy, so we are looking for many different k
 
 ## Things we are not looking for
 1. Suggestions to use or actual use of existing export-controlled or proprietary software/information as part of the project.
+2. Ideas for future features.
 
 # Social Contract
 Like with any group of people, there is an implied and an explicit social contract when dealing with each other. We believe in being as explicit as possible in this community, especially since interactions can happen without in-person contact. We have a code of conduct file, go read that. It is based on a very common code of conduct, and we will update it with additional expectations as we go along.
