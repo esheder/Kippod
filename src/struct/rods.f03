@@ -9,25 +9,27 @@ MODULE Rods
   USE Materials
   IMPLICIT NONE
   PRIVATE
-  !
+  
   CHARACTER(LEN=*),PARAMETER :: modName='Rod'
+  
   TYPE, PUBLIC :: Rod
-    !> Length of the rod (m).
-    REAL(SRK) :: len
-    !> Diameter of the rod (m).
-    REAL(SRK) :: dia
-    !> List of materials in the rod from bottom to top.
-    TYPE(Material), DIMENSION(:), ALLOCATABLE :: materials
-    !> Heights of each material in the rod from bottom to top (corresponds to
-    !> materials in mats).
-    REAL(SRK), DIMENSION(:), ALLOCATABLE :: heights
-    !> Temperatures of each material in this rod. Will probably be fairly even across the core but
-    !> allows for future coupling, though that feature might require a change in how this is stored
-    REAL(SRK), DIMENSION(:), ALLOCATABLE :: temperatures
-    CONTAINS
-      PROCEDURE, PUBLIC, PASS :: init => init_Rod
-      PROCEDURE, PUBLIC, PASS :: clear => clear_Rod
-  ENDTYPE Rod
+     !> Length of the rod (m).
+     REAL(SRK) :: len
+     !> Diameter of the rod (m).
+     REAL(SRK) :: dia
+     !> List of materials in the rod from bottom to top.
+     TYPE(Material), DIMENSION(:), ALLOCATABLE :: materials
+     !> Heights of each material in the rod from bottom to top (corresponds to
+     !> materials in mats).
+     REAL(SRK), DIMENSION(:), ALLOCATABLE :: heights
+     !> Temperatures of each material in this rod. Will probably be fairly even across the core but
+     !> allows for future coupling, though that feature might require a change in how this is
+     !> stored.
+     REAL(SRK), DIMENSION(:), ALLOCATABLE :: temperatures
+   CONTAINS
+     PROCEDURE, PUBLIC, PASS :: init => init_Rod
+     PROCEDURE, PUBLIC, PASS :: clear => clear_Rod
+  END TYPE Rod
 !
 !===============================================================================
   CONTAINS
