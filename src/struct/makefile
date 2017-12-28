@@ -5,7 +5,7 @@ BD = ../build
 
 .PHONY : all clean test
 
-all: materials.o reflectors.o isotopes.o rods.o
+all: materials.o reflectors.o isotopes.o rods.o cores.o
 
 materials.o : 
 	$(F03) $(FFLAGS) -c $(MODP) materials.f03 -o $(BD)/$@
@@ -18,6 +18,9 @@ isotopes.o :
 
 rods.o : materials.o
 	$(F03) $(FFLAGS) -c $(MODP) rods.f03 -o $(BD)/$@
+
+cores.o : reflectors.o rods.o
+	$(F03) $(FFLAGS) -c $(MODP) cores.f03 -o $(BD)/$@
 
 clean:
 	@rm -f *.mod *.o

@@ -14,4 +14,5 @@ MODULE Parameters
   INTEGER, PARAMETER :: SIK = SELECTED_INT_KIND(10)     !Selected Integer Kind.
   INTEGER, PARAMETER :: MX_PATHLENGTH = 500             !Maximum of characters in a file path
   INTEGER, PARAMETER :: MX_BFR = 500                    !Maximum of characters in a file record
+  INTEGER, PARAMETER :: MX_NM = 20                      !Maximum of object names
 END MODULE Parameters
