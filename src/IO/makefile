@@ -7,6 +7,8 @@ all: parsers.o coreparsers.o
 
 %.mod : %.o ;
 
+.PHONY : all test clean
+
 parsers.o : 
 	$(F03) $(FFLAGS) -c $(MODP) parsers.f03 -o $(BD)/$@
 

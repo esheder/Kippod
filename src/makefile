@@ -42,7 +42,7 @@ iotest:
 
 test: utiltest structtest solvetest iotest ;
 
-.PHONY: clean
+.PHONY: clean test iotest structtest utiltest solvetest structures csolvers cIO cutils all
 clean:
 	@rm -f LLTest.x
 	@for i in $(srcdirs);  do \

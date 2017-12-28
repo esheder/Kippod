@@ -6,23 +6,23 @@ MODOBJ = $(SRCOBJ:.f03=.o)
 VPATH = ../build
 BD = ../build
 
+.PHONY : all clean test
 all: $(MODOBJ)
 
 LLTest.o : ;
-%.mod : %.o ;
 
-linelists.o : lists.mod exceptions.mod parameters.mod
+linelists.o : lists.o exceptions.o parameters.o
 	$(F03) $(FFLAGS) -c $(MODP) linelists.f03 -o $(BD)/$@
 
-lists.o : exceptions.mod
+lists.o : exceptions.o
 	$(F03) $(FFLAGS) -c $(MODP) lists.f03 -o $(BD)/$@
 
-seclists.o : lists.mod linelists.mod parameters.mod
+seclists.o : lists.o linelists.o parameters.o
 	$(F03) $(FFLAGS) -c $(MODP) seclists.f03 -o $(BD)/$@
-reallists.o : lists.mod parameters.mod
+reallists.o : lists.o parameters.o
 	$(F03) $(FFLAGS) -c $(MODP) reallists.f03 -o $(BD)/$@
 
-trees.o : lists.mod
+trees.o : lists.o
 	$(F03) $(FFLAGS) -c $(MODP) trees.f03 -o $(BD)/$@
 
 

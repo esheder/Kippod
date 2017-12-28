@@ -7,3 +7,5 @@ all :
 clean :
 	@rm -f *.o *.mod *~
 test : all ;
+
+.PHONY : all clean test
