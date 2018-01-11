@@ -2,15 +2,20 @@
 // This header is for a XSSet, which is a container of microscopic nuclear data information for isotopes in a specific condition.
 // All isotopes that are not followed are dumped into the residual isotope, which is always at concentration 1.0
 
-#include <isotopes.hpp>
-#include <sparse.hpp>
+#ifndef _SET_H_
+#define _SET_H_
+
+// #include <isotopes.hpp>
+// #include <sparse.hpp>
+
 #include <map>
-#include <shared_ptr>
 #include <vector>
+
+class Isotope ; // Forward declaration
 
 class XSSet {
 public:
-  std::map<Isotope, MicroSet> isosets ;
+  std::map<Isotope&, MicroSet&> isosets ;
   XSSet() ; //Todo: decide on a constructor for cross section sets
   
 };

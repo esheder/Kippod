@@ -5,18 +5,24 @@
 // The component object contains the material it is made out of, but has other uses.
 // Style is header-should-be-small
 
-#include <set.hpp>
-#include <condition.hpp>
+#ifndef _MATERIAL_H_
+#define _MATERIAL_H_
+
+//#include <set.hpp>
+//#include <condition.hpp>
 #include <map>
 #include <string>
 
+class Condition; //Forward declaration
+class XSSet; //Forward declaration
+
 class Material {
 protected:
-  std::map<Condition,XSSet> sets_ ;
+  std::map< Condition&, std::shared_ptr<XSSet> > sets_ ;
   std::string name_ ;
 
 public:
   Material(std::string name) ; //Todo:Define how to initiate a material object. Depends on library format.
-  getXSSet(Condition C) ;
+  getXSSet(const Condition& C) ;
 
 };
