@@ -5,9 +5,12 @@
 #ifndef _COMPONENT_H_
 #define _COMPONENT_H_
 
-#include <shared_ptr>
-#include <material.hpp>
-#include <condition.hpp>
+#include <memory>
+//#include <material.hpp>
+//#include <condition.hpp>
+
+class Material ; // Forward declarations
+class Condition ; // Forward declarations
 
 class Component {
 protected:

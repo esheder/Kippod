@@ -8,20 +8,23 @@
 
 #include <map>
 #include <string>
-#include <shared_ptr>
-#include <unique_ptr>
-#include <boost/any.hpp>
+#include <memory>
+#include <boost/variant.hpp>
+
+typedef boost::variant<int, bool, float, double, std::string> VarVal;
 
 class Condition {
   // The correct way to do this is by creating maps of variables (global and local) and values.
   // Alas, there is no such map given in C++. We can create a de-facto one with internet help,
 protected:
-  std::map< std::string, boost::any > global_ ;
-  std::map< std::string, boost::any > local_ ;
+    std::map< std::string, VarVal > global_ ;
+    std::map< std::string, VarVal > local_ ;
 public:
-  Condition() ; //A condition is initially empty, and then we add things to the maps.
-  void setGlobalVar(std::string key, boost:any val) ;
-  void setLocalVar(std::string key, boost:any val) ;
-  bool operator==(const Condition& c) ;
+    Condition() ; //A condition is initially empty, and then we add things to the maps.
+    void setGlobalVar(std::string key, VarVal val) ;
+    void setLocalVar(std::string key, VarVal val) ;
+    bool operator==(const Condition& c) ;
   
 };
+
+#endif

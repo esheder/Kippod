@@ -13,16 +13,19 @@
 
 class Isotope ; // Forward declaration
 
-class XSSet {
-public:
-  std::map<Isotope&, MicroSet&> isosets ;
-  XSSet() ; //Todo: decide on a constructor for cross section sets
-  
-};
+class SparseMat ; // Forward declaration
 
-class Microset {
+class MicroSet {
 public:
-  Microset() ; //Todo: decide on a constructor for isotopic cross section sets
+  MicroSet() ; //Todo: decide on a constructor for isotopic cross section sets
   //Todo: Write ways to get read only versions of the cross sections that should be protected in the implementation.
 
 };
+
+class XSSet {
+public:
+  std::map<Isotope, MicroSet> isosets ;
+  XSSet() ; //Todo: decide on a constructor for cross section sets
+  
+};
+#endif

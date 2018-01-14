@@ -5,7 +5,7 @@
 #ifndef TRANS_H
 #define TRANS_H
 
-#include <shared_ptr>
+#include <memory>
 
 class Isotope ; //Forward declaration so transmutations can have isotopes and vice-versa.
 
