@@ -10,9 +10,9 @@ Our vision is that best practices will be shared across the academic community, 
 # Preferred contributions
 As an open-source project, we are always excited for contributions from our community (which now includes you!).
 This project is currently in its infancy, so we are looking for many different kinds of contributions:
-1. Nuclear engineers with modern FORTRAN experience are needed in every source code file right now.
-2. Developers with modern FORTRAN experience are welcome in every module that isn't nuclear-specific. For example, the utils package, the IO package and the like. For now just avoid the struct package.
-3. If you're lacking in modern FORTRAN experience but looking for a place to start, you've come to the right place! We will try our best to help you learn the things you need to know, but in the meantime, there is still much more work to do that doesn't require coding experience. While you're learning, you can read existing software, and add comments and documentation.
+1. Nuclear engineers with modern C++ experience are needed in every source code file right now.
+2. Developers with modern C++ experience are welcome in every module that isn't nuclear-specific. For example, the utils package, the IO package and the like. For now just avoid the struct package.
+3. If you're lacking in modern C++ experience but looking for a place to start, you've come to the right place! We will try our best to help you learn the things you need to know, but in the meantime, there is still much more work to do that doesn't require coding experience. While you're learning, you can read existing software, and add comments and documentation.
 4. If you're not interested in coding but still willing to contribute, one of our goals is to improve our overall documentation. I mean, look at this file. This is a mess. We need you!
 
 ## Things we are not looking for
