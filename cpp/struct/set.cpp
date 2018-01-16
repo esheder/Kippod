@@ -3,15 +3,33 @@
 //
 
 #include "set.hpp"
-#include "sparse.hpp"
+//#include "sparse.hpp"
 #include <memory>
+#include <cassert>
 
-class Microset {
-private: //This data is currently private because no using application should be able to change it
-    std::shared_ptr< std::unique_ptr<double> > DiffusionCoeff_ ; //3x3 tensor for every energy
-    std::shared_ptr<double> totalXS_ ;
-    std::shared_ptr<double> absXS_ ;
-    SparseMat sM_ ;
-    std::shared_ptr<double> chi_ ;
-    std::shared_ptr<double> nF_ ;
+MicroSet :: MicroSet(const vector<double>& tXS, const vector<double>& chi, const vector<double>& nfXS, const SparseMat& sM) : totalXS_(tXS),sM_(sM),chi_(chi),nF_(nfXS),absXS_()
+{
+    assert(tXS.size() != chi.size() || tXS.size() != nfXS.size() ||
+	   tXS.size() != sM.size() || tXS.size() != D.size()) ;
+    absXS_.reserve(tXS.size())
+    for (int i=0; i<res.size(); i++)
+    {
+	absXS_[i] = tXS[i] - sM[i][i]
+    }
+}
+
+vector<double> totToAbs (const vector<double>& tXS, const SparseMat& sM)
+{
+    //Assumes vectors are of the same length. Should be assured by caller.
+    vector<double> res(tXS.size());
+    return res;
+}
+
+XSSet :: XSSet(const vector<Isotope>& isos, const vector<MicroSet>& sets)
+{
+    assert(
+    for (int i=0; i<size(isos); i++)
+    {
+	isosets[isos[i]] = sets[i] ;
+    }
 }
