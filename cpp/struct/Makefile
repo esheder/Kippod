@@ -3,12 +3,13 @@ FLAGS = -std=c++17 -w -Wfatal-errors
 
 .PHONY : all clean
 
-all : set.o
+all : sparsevec.o
 
 clean:
-	@rm -f *.o *.x
+	@rm -f *.o *.x *~
 
 %.o : %.cpp
-	$(COMP) $(FLAGS) $^
+	$(COMP) $(FLAGS) -c $<
 
-set.o : set.cpp
+set.o : set.cpp sparsevec.hpp set.hpp
+sparsevec.o : sparsevec.cpp sparsevec.hpp
